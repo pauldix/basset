@@ -1,7 +1,0 @@
-== 1.0.0 / 2008-01-08
-
-* Initial release
-
-== 1.0.1 / 2008-01-08
-
-* Updated release with new code actually checked into rubyforge.

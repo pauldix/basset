@@ -6,7 +6,7 @@ module Basset
   class Feature
     attr_accessor :name, :value
   
-    def initialize(name, value = 0)
+    def initialize(name, value = 0.0)
       @name   = name
       @value  = value
     end

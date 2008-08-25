@@ -15,7 +15,8 @@ Hoe.new('basset', Basset::VERSION) do |p|
   p.description = p.paragraphs_of('README.txt', 2..5).join("\n\n")
   p.changes = p.paragraphs_of('History.txt', 0..1).join("\n\n")
   p.remote_rdoc_dir = '' # Release to root
-  p.extra_deps << ['stemmer', '>= 1.0.1']
+  p.extra_deps << ['stemmer', '>= 1.0.1']  
+  p.extra_deps << ['json', '>= 1.1.3']
 end
 
 desc "Run all of the specs"

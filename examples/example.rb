@@ -7,6 +7,8 @@ documents = [
   Basset::Document.new("python is boring", :python)]
 
 # first add the docs to the feature selector
+# The feature selector is tricky. It messes with this kind of toy example since it throws
+# out features that don't occur in enough documents.
 feature_selector = Basset::FeatureSelector.new
 documents.each {|doc| feature_selector.add_document(doc)}
 

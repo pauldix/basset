@@ -10,9 +10,11 @@ Gem::Specification.new do |s|
   s.email = %q{paul@pauldix.net}
   s.files = [
     "lib/basset.rb",
+    "lib/basset/parser.rb",
     "README.textile",
     "spec/spec.opts", 
-    "spec/spec_helper.rb"]
+    "spec/spec_helper.rb",
+    "spec/basset/parser_spec.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/pauldix/basset}
   s.require_paths = ["lib"]

@@ -45,8 +45,4 @@ describe "feature collection" do
       @collection.features_to_sparse_vector(%w[basset is written by paul is library]).should == ["1,1", "2,1", "3,2", "6,1"]
     end
   end
-  
-  describe "normalization" do
-    
-  end
 end

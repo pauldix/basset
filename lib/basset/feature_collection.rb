@@ -1,23 +1,22 @@
 class Basset::FeatureCollection
-  class Feature
-    attr_accessor :index, :frequency
-    
-    def initialize(options = {})
-      @index = options[:index]
-      @frequency = options[:frequency]
-    end
-  end
+  attr_accessor :row_count
   
   def initialize(options = {})
     @feature_map = {}
     @sparse_vector_separator = (options[:sparse_vector_separator] || ",")
+    @row_count = 0
   end
   
   def add_row(features)
+    @row_count += 1
     features.each do |f|
        feature = (@feature_map[f] ||= Feature.new(:index => @feature_map.size, :frequency => 0))
        feature.frequency += 1
     end
+  end
+  
+  def feature_count
+    @feature_map.size
   end
   
   def features
@@ -49,4 +48,13 @@ class Basset::FeatureCollection
     end
     sparse_vector
   end
+  
+  class Feature
+    attr_accessor :index, :frequency
+    
+    def initialize(options = {})
+      @index = options[:index]
+      @frequency = options[:frequency]
+    end
+  end  
 end

@@ -4,11 +4,19 @@ describe "feature collection" do
   describe "numbering features" do
     before(:each) do
       @collection = Basset::FeatureCollection.new
-      @collection.add_row %w[hello paul]
+      @collection.add_row %w[hello paul hello]
     end
     
     it "takes rows of features" do
       @collection.features.should == %w[hello paul]
+    end
+    
+    it "counts how many rows have been added" do
+      @collection.row_count.should == 1
+    end
+    
+    it "counts the number of unique features" do
+      @collection.feature_count.should == 2
     end
     
     it "keeps the index of a feature" do
@@ -22,7 +30,7 @@ describe "feature collection" do
     
     it "knows the number of times a feature occurs across all rows" do
       @collection.add_row %w[code hello paul and paul]
-      @collection.global_frequency("hello").should == 2
+      @collection.global_frequency("hello").should == 3
       @collection.global_frequency("paul").should == 3
     end
   end

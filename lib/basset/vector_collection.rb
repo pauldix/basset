@@ -8,6 +8,8 @@ class Basset::VectorCollection
   def entropy_normalize_vectors(input_file, output_file)
     compute_weights(input_file)
     
+    output_file.puts "#{@global_weights.size},#{@vector_count}"
+    
     input_file.each do |line|
       output_vector = []
       execute_calculation_on_line(line) do |column, count|

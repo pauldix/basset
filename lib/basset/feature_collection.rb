@@ -42,11 +42,12 @@ class Basset::FeatureCollection
   end
   
   def features_to_sparse_vector(features)
-    sparse_vector = []
-    features_to_vector(features).each_with_index do |f, i|
-      sparse_vector << "#{i}#{@sparse_vector_separator}#{f}" unless f == 0
+    sparse_vector = Hash.new {|h, k| h[k] = 0}
+    features.each do |feature|
+      index = index_of(feature)
+      sparse_vector[index] += 1 if index
     end
-    sparse_vector
+    sparse_vector.keys.sort.map {|k| "#{k},#{sparse_vector[k]}"}
   end
   
   class Feature

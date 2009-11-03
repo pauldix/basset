@@ -7,5 +7,5 @@ require 'basset/feature_collection'
 require 'basset/vector_collection'
 
 module Basset
-  VERSION = "2.0.0"
+  VERSION = "2.0.1"
 end

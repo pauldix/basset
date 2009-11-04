@@ -50,4 +50,32 @@ describe "feature collection" do
       @collection.features_to_sparse_vector(%w[basset is written by paul is library]).should == ["1,1", "2,1", "3,2", "6,1"]
     end
   end
+  
+  describe "serializin a feature collection" do
+    it "can serialize to json" do
+      collection = Basset::FeatureCollection.new
+      collection.add_row %w[hello paul]
+      collection.add_row %w[basset by paul]
+      JSON.parse(collection.to_json).should == {
+        "row_count" => 2,
+        "sparse_vector_separator" => ",",
+        "feature_map" => {
+          "hello" => [0, 1],
+          "paul" => [1, 2],
+          "basset" => [2, 1],
+          "by" => [3, 1]
+        }
+      }
+    end
+    
+    it "can marshall from json" do
+      collection = Basset::FeatureCollection.new
+      collection.add_row %w[hello paul]
+      collection.add_row %w[basset by paul]
+      
+      marshalled_collection = Basset::FeatureCollection.from_json(collection.to_json)
+      marshalled_collection.global_frequency("paul").should == 2
+      marshalled_collection.index_of("by").should == 3
+    end
+  end
 end

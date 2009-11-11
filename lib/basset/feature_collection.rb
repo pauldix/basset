@@ -3,7 +3,6 @@ class Basset::FeatureCollection
 
   def initialize(options = {})
     @feature_map = options[:feature_map] || {}
-    @sparse_vector_separator = options[:sparse_vector_separator] || ","
     @row_count = options[:row_count] || 0
   end
 
@@ -48,13 +47,12 @@ class Basset::FeatureCollection
       index = index_of(feature)
       sparse_vector[index] += 1 if index
     end
-    sparse_vector.keys.sort.map {|k| "#{k},#{sparse_vector[k]}"}
+    sparse_vector.keys.sort.map {|k| [k, sparse_vector[k]]}
   end
 
   def serializable_hash_map
     {
       :row_count => @row_count,
-      :sparse_vector_separator => @sparse_vector_separator,
       :feature_map => @feature_map
     }
   end
@@ -67,7 +65,6 @@ class Basset::FeatureCollection
     new({
       :feature_map => json["feature_map"],
       :row_count   => json["row_count"],
-      :sparse_vector_separator => json["sparse_vector_separator"]
     })
   end
 

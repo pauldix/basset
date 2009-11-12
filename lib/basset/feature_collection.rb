@@ -47,12 +47,18 @@ class Basset::FeatureCollection
     vector
   end
 
-  def features_to_sparse_vector(features)
+  def features_to_sparse_vector(features, options)
     sparse_vector = Hash.new {|h, k| h[k] = 0}
+
     features.each do |feature|
       index = index_of(feature)
       sparse_vector[index] += 1 if index
     end
+
+    if options[:value] == :tf
+      sparse_vector.keys.each {|key| sparse_vector[key] = sparse_vector[key] / features.size.to_f}
+    end
+
     sparse_vector.keys.sort.map {|k| [k, sparse_vector[k]]}
   end
 
@@ -69,10 +75,6 @@ class Basset::FeatureCollection
         index += 1
       end
     end
-    # @feature_map.each_pair do |feature, index_and_count|
-    #   index_and_count[0] = count
-    #   count += 1
-    # end
   end
 
   def serializable_hash_map

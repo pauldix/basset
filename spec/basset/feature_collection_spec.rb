@@ -60,6 +60,10 @@ describe "feature collection" do
     it "can extract a sparse vector format" do
       @collection.features_to_sparse_vector(%w[basset is written by paul is library]).should == [[1,1], [2,1], [3,2], [6,1]]
     end
+
+    it "can return sparse vector with tf counts" do
+      @collection.features_to_sparse_vector(%w[basset is written by paul is library], :value => :tf).inspect.should == [[1, 0.142857142857143], [2, 0.142857142857143], [3, 0.285714285714286], [6, 0.142857142857143]].inspect
+    end
   end
 
   describe "serializin a feature collection" do

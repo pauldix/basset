@@ -47,7 +47,11 @@ class Basset::FeatureCollection
     vector
   end
 
-  def features_to_sparse_vector(features, options)
+  # The options hash has one option :value which can be either :tf or :tf_idf.
+  # Note that if you choose :tf_idf, you must do it only after you have added all rows.
+  # this typically means looping through your data set twice. first to add rows, second to
+  # extract sparse feature vectors
+  def features_to_sparse_vector(features, options = {})
     sparse_vector = Hash.new {|h, k| h[k] = 0}
 
     features.each do |feature|
@@ -55,8 +59,24 @@ class Basset::FeatureCollection
       sparse_vector[index] += 1 if index
     end
 
-    if options[:value] == :tf
+    if options[:value] == :tf || options[:value] == :tf_idf
       sparse_vector.keys.each {|key| sparse_vector[key] = sparse_vector[key] / features.size.to_f}
+
+      if options[:value] == :tf_idf
+        features.uniq.each do |feature|
+          index_and_count = @feature_map[feature]
+          if index_and_count
+            if index_and_count.size == 3
+              idf = index_and_count[2]
+            else
+              idf = Math.log10(@row_count / index_and_count[1])
+              index_and_count << idf
+            end
+            index = index_and_count[0]
+            sparse_vector[index] = sparse_vector[index] * idf
+          end
+        end
+      end
     end
 
     sparse_vector.keys.sort.map {|k| [k, sparse_vector[k]]}

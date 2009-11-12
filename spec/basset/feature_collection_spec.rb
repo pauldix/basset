@@ -47,9 +47,9 @@ describe "feature collection" do
   end
 
   describe "extracing feature vectors" do
-    before(:all) do
+    before(:each) do
       @collection = Basset::FeatureCollection.new()
-      @collection.add_row %w[hello paul]
+      @collection.add_row %w[hello paul basset]
       @collection.add_row %w[basset is a ruby library]
     end
 
@@ -61,8 +61,12 @@ describe "feature collection" do
       @collection.features_to_sparse_vector(%w[basset is written by paul is library]).should == [[1,1], [2,1], [3,2], [6,1]]
     end
 
-    it "can return sparse vector with tf counts" do
+    it "can return a sparse vector with tf counts" do
       @collection.features_to_sparse_vector(%w[basset is written by paul is library], :value => :tf).inspect.should == [[1, 0.142857142857143], [2, 0.142857142857143], [3, 0.285714285714286], [6, 0.142857142857143]].inspect
+    end
+
+    it "can return a sparse vector with tf-idf counts" do
+      @collection.features_to_sparse_vector(%w[basset is written by paul is library], :value => :tf_idf).inspect.should == [[1, 0.0430042850948545], [2, 0.0], [3, 0.0860085701897089], [6, 0.0430042850948545]].inspect
     end
   end
 

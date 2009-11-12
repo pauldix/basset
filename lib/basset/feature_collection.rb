@@ -9,7 +9,7 @@ class Basset::FeatureCollection
 
   def add_row(features)
     @row_count += 1
-    features.each do |f|
+    features.uniq.each do |f|
       feature = @feature_map[f]
       if feature
         feature[1] += 1
@@ -33,7 +33,7 @@ class Basset::FeatureCollection
     f[0] if f
   end
 
-  def global_frequency(feature)
+  def document_frequency(feature)
     f = @feature_map[feature]
     f[1] if f
   end

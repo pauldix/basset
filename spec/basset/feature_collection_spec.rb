@@ -28,16 +28,17 @@ describe "feature collection" do
       @collection.index_of("whatevs").should == nil
     end
 
-    it "knows the number of times a feature occurs across all rows" do
+    it "knows the number of rows a feature occurs in" do
       @collection.add_row %w[code hello paul and paul]
-      @collection.global_frequency("hello").should == 3
-      @collection.global_frequency("paul").should == 3
+      @collection.document_frequency("code").should == 1
+      @collection.document_frequency("hello").should == 2
+      @collection.document_frequency("paul").should == 2
     end
 
     it "should remove features that occur under a given number of times and renumber all others while preserving insertion order" do
       collection = Basset::FeatureCollection.new
-      collection.add_row %w[hello basset library hello]
-      collection.add_row %w[basset is sweet]
+      collection.add_row %w[hello basset library hello library]
+      collection.add_row %w[basset is sweet hello]
       collection.purge_features_occuring_less_than(2)
       collection.features.size.should == 2
       collection.index_of("hello").should == 0
@@ -79,11 +80,11 @@ describe "feature collection" do
 
     it "can marshall from json" do
       collection = Basset::FeatureCollection.new
-      collection.add_row %w[hello paul]
+      collection.add_row %w[paul hello paul]
       collection.add_row %w[basset by paul]
 
       marshalled_collection = Basset::FeatureCollection.from_json(collection.to_json)
-      marshalled_collection.global_frequency("paul").should == 2
+      marshalled_collection.document_frequency("paul").should == 2
       marshalled_collection.index_of("by").should == 3
     end
   end

@@ -4,13 +4,19 @@ class Basset::FeatureCollection
   def initialize(options = {})
     @feature_map = options[:feature_map] || {}
     @row_count = options[:row_count] || 0
+    @ordered_features = []
   end
 
   def add_row(features)
     @row_count += 1
     features.each do |f|
-       feature = (@feature_map[f] ||= [@feature_map.size, 0])
-       feature[1] += 1
+      feature = @feature_map[f]
+      if feature
+        feature[1] += 1
+      else
+        @ordered_features << f
+        @feature_map[f] = [@feature_map.size, 1]
+      end
     end
   end
 
@@ -48,6 +54,25 @@ class Basset::FeatureCollection
       sparse_vector[index] += 1 if index
     end
     sparse_vector.keys.sort.map {|k| [k, sparse_vector[k]]}
+  end
+
+  def purge_features_occuring_less_than(times)
+    @feature_map.each_pair do |feature, index_and_count|
+      @feature_map.delete(feature) if index_and_count[1] < times
+    end
+
+    index = 0
+    @ordered_features.each do |f|
+      index_and_count = @feature_map[f]
+      if index_and_count
+        index_and_count[0] = index
+        index += 1
+      end
+    end
+    # @feature_map.each_pair do |feature, index_and_count|
+    #   index_and_count[0] = count
+    #   count += 1
+    # end
   end
 
   def serializable_hash_map

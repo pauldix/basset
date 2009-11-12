@@ -33,6 +33,16 @@ describe "feature collection" do
       @collection.global_frequency("hello").should == 3
       @collection.global_frequency("paul").should == 3
     end
+
+    it "should remove features that occur under a given number of times and renumber all others while preserving insertion order" do
+      collection = Basset::FeatureCollection.new
+      collection.add_row %w[hello basset library hello]
+      collection.add_row %w[basset is sweet]
+      collection.purge_features_occuring_less_than(2)
+      collection.features.size.should == 2
+      collection.index_of("hello").should == 0
+      collection.index_of("basset").should == 1
+    end
   end
 
   describe "extracing feature vectors" do

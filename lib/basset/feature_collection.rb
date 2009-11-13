@@ -59,27 +59,40 @@ class Basset::FeatureCollection
       sparse_vector[index] += 1 if index
     end
 
-    if options[:value] == :tf || options[:value] == :tf_idf
-      sparse_vector.keys.each {|key| sparse_vector[key] = sparse_vector[key] / features.size.to_f}
-
-      if options[:value] == :tf_idf
-        features.uniq.each do |feature|
-          index_and_count = @feature_map[feature]
-          if index_and_count
-            if index_and_count.size == 3
-              idf = index_and_count[2]
-            else
-              idf = Math.log10(@row_count / index_and_count[1])
-              index_and_count << idf
-            end
-            index = index_and_count[0]
-            sparse_vector[index] = sparse_vector[index] * idf
-          end
-        end
-      end
+    case options[:value]
+    when :tf
+      # do nothing, we're already good
+    when :boolean
+      sparse_vector.keys.each {|key| sparse_vector[key] = 1}
+    when :tf_idf
+      idf(features, sparse_vector)
+    when :sublinear_tf_idf
+      sparse_vector.keys.each {|key| sparse_vector[key] = 1 + Math.log10(sparse_vector[key])}
+      idf(features, sparse_vector)
     end
 
     sparse_vector.keys.sort.map {|k| [k, sparse_vector[k]]}
+  end
+
+  def idf(features, sparse_vector)
+    features.uniq.each do |feature|
+      index_and_count = @feature_map[feature]
+      if index_and_count
+        if index_and_count.size == 3
+          idf = index_and_count[2]
+        else
+          idf = Math.log10(@row_count / index_and_count[1])
+          index_and_count << idf
+        end
+        index = index_and_count[0]
+        val = sparse_vector[index] * idf
+        if val == 0
+          sparse_vector.delete index
+        else
+          sparse_vector[index] = val
+        end
+      end
+    end
   end
 
   def purge_features_occuring_less_than(times)

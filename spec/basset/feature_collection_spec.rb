@@ -61,12 +61,20 @@ describe "feature collection" do
       @collection.features_to_sparse_vector(%w[basset is written by paul is library]).should == [[1,1], [2,1], [3,2], [6,1]]
     end
 
-    it "can return a sparse vector with tf counts" do
-      @collection.features_to_sparse_vector(%w[basset is written by paul is library], :value => :tf).inspect.should == [[1, 0.142857142857143], [2, 0.142857142857143], [3, 0.285714285714286], [6, 0.142857142857143]].inspect
+    it "calculates a sparse vector with tf counts" do
+      @collection.features_to_sparse_vector(%w[basset is written by paul is library], :value => :tf).should == [[1,1], [2,1], [3,2], [6,1]]
     end
 
-    it "can return a sparse vector with tf-idf counts" do
-      @collection.features_to_sparse_vector(%w[basset is written by paul is library], :value => :tf_idf).inspect.should == [[1, 0.0430042850948545], [2, 0.0], [3, 0.0860085701897089], [6, 0.0430042850948545]].inspect
+    it "calculates a sparse vector with booleans on if a feature appeared" do
+      @collection.features_to_sparse_vector(%w[basset is written by paul is library], :value => :boolean).should == [[1,1], [2,1], [3,1], [6,1]]
+    end
+
+    it "calculates a sparse vector with tf-idf counts and should exclude values of 0" do
+      @collection.features_to_sparse_vector(%w[basset is written by paul is library], :value => :tf_idf).inspect.should == [[1, 0.301029995663981], [3, 0.602059991327962], [6, 0.301029995663981]].inspect
+    end
+
+    it "calculates a sparse vector with sublinear tf-idf counts and should exclude values of 0" do
+      @collection.features_to_sparse_vector(%w[basset is written by paul is library], :value => :sublinear_tf_idf).inspect.should == [[1, 0.301029995663981], [3, 0.391649053953438], [6, 0.301029995663981]].inspect
     end
   end
 
